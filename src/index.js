@@ -31,10 +31,13 @@ Base.prototype = {
 
 Main = function() {
   Base.call(this);
+  $.subscribe("posts/loaded", function(e, data) {
+    main.render("#main", { posts: data, Sub: sub.component });
+  });
 };
 Main.prototype = {
   template: `<% for (var i = 0; i < posts.length; i++) { %>
-               <%= Sub({id:posts[i].id, title:posts[i].title, body:posts[i].body}) %>
+               <%= Sub({id:posts[i].id, userId:posts[i].userId, title:posts[i].title, body:posts[i].body}) %>
              <% } %>`
 };
 
@@ -45,6 +48,7 @@ Sub.prototype = {
   template: `<article>
                <ul>
                  <li>id: <%= id %></li>
+                 <li>userId: <%= userId %></li>
                  <li>title: <%= title %></li>
                  <li>body: <%= body %></li>
                </ul>
@@ -80,19 +84,32 @@ var initialData = [
 window.addEventListener("DOMContentLoaded", event => {
   console.log("DOM fully loaded and parsed");
 
-  // initial rendering
-  main.render("#main", { posts: initialData, Sub: sub.component });
+  // API Call
+  $.ajax({
+    url: "https://jsonplaceholder.typicode.com/posts",
+    type: "GET",
+    data: { userId: "1" },
+    datatype: "json"
+  })
+    .done(function(data) {
+      // initial rendering
+      $.publish("posts/loaded", [data]);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      console.error(jqXHR.status, textStatus);
+    });
 
   setTimeout(function() {
     // API Call
     $.ajax({
       url: "https://jsonplaceholder.typicode.com/posts",
       type: "GET",
+      data: { userId: "2" },
       datatype: "json"
     })
       .done(function(data) {
         // re-rendering
-        main.render("#main", { posts: data.slice(0, 10), Sub: sub.component });
+        $.publish("posts/loaded", [data]);
       })
       .fail(function(jqXHR, textStatus, errorThrown) {
         console.error(jqXHR.status, textStatus);
