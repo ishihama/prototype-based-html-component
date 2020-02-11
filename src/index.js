@@ -60,10 +60,8 @@ window.addEventListener("DOMContentLoaded", event => {
   var Base = function() {
     this.component = _.template(this.template);
   };
-  Base.prototype = {
-    render: function(el, props) {
-      $(el).html(this.component(props));
-    }
+  Base.prototype.render = function(el, props) {
+    $(el).html(this.component(props));
   };
 
   var Main = function() {
