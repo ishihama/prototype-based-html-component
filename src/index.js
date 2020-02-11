@@ -31,29 +31,22 @@ Base.prototype = {
 
 Main = function() {
   Base.call(this);
-  $.subscribe("posts/loaded", function(e, data) {
-    main.render("#main", { posts: data, Sub: sub.component });
-  });
 };
-Main.prototype = {
-  template: `<% for (var i = 0; i < posts.length; i++) { %>
-               <%= Sub({id:posts[i].id, userId:posts[i].userId, title:posts[i].title, body:posts[i].body}) %>
-             <% } %>`
-};
+Main.prototype.template = `<% for (var i = 0; i < posts.length; i++) { %>
+                             <%= Sub({id:posts[i].id, userId:posts[i].userId, title:posts[i].title, body:posts[i].body}) %>
+                           <% } %>`;
 
 Sub = function() {
   Base.call(this);
 };
-Sub.prototype = {
-  template: `<article>
-               <ul>
-                 <li>id: <%= id %></li>
-                 <li>userId: <%= userId %></li>
-                 <li>title: <%= title %></li>
-                 <li>body: <%= body %></li>
-               </ul>
-             </article>`
-};
+Sub.prototype.template = `<article>
+                           <ul>
+                             <li>id: <%= id %></li>
+                             <li>userId: <%= userId %></li>
+                             <li>title: <%= title %></li>
+                             <li>body: <%= body %></li>
+                           </ul>
+                         </article>`;
 
 // inherits
 Object.setPrototypeOf(Main.prototype, Base.prototype);
@@ -63,23 +56,9 @@ Object.setPrototypeOf(Sub.prototype, Base.prototype);
 var main = new Main();
 var sub = new Sub();
 
-var initialData = [
-  {
-    id: "1",
-    title: "title1",
-    body: "body1"
-  },
-  {
-    id: "2",
-    title: "title2",
-    body: "body2"
-  },
-  {
-    id: "3",
-    title: "title3",
-    body: "body3"
-  }
-];
+$.subscribe("posts/loaded", function(e, data) {
+  main.render("#main", { posts: data, Sub: sub.component });
+});
 
 window.addEventListener("DOMContentLoaded", event => {
   console.log("DOM fully loaded and parsed");
