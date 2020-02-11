@@ -20,46 +20,6 @@
 //   return navigator.appVersion.indexOf("MSIE 10") > 0;
 // };
 
-Base = function() {
-  this.component = _.template(this.template);
-};
-Base.prototype = {
-  render: function(el, props) {
-    $(el).html(this.component(props));
-  }
-};
-
-Main = function() {
-  Base.call(this);
-};
-Main.prototype.template = `<% for (var i = 0; i < posts.length; i++) { %>
-                             <%= Sub({id:posts[i].id, userId:posts[i].userId, title:posts[i].title, body:posts[i].body}) %>
-                           <% } %>`;
-
-Sub = function() {
-  Base.call(this);
-};
-Sub.prototype.template = `<article>
-                           <ul>
-                             <li>id: <%= id %></li>
-                             <li>userId: <%= userId %></li>
-                             <li>title: <%= title %></li>
-                             <li>body: <%= body %></li>
-                           </ul>
-                         </article>`;
-
-// inherits
-Object.setPrototypeOf(Main.prototype, Base.prototype);
-Object.setPrototypeOf(Sub.prototype, Base.prototype);
-
-// instances
-var main = new Main();
-var sub = new Sub();
-
-$.subscribe("posts/loaded", function(e, data) {
-  main.render("#main", { posts: data, Sub: sub.component });
-});
-
 window.addEventListener("DOMContentLoaded", event => {
   console.log("DOM fully loaded and parsed");
 
@@ -95,3 +55,45 @@ window.addEventListener("DOMContentLoaded", event => {
       });
   }, 3000);
 });
+
+(function() {
+  var Base = function() {
+    this.component = _.template(this.template);
+  };
+  Base.prototype = {
+    render: function(el, props) {
+      $(el).html(this.component(props));
+    }
+  };
+
+  var Main = function() {
+    Base.call(this);
+  };
+  Main.prototype.template = `<% for (var i = 0; i < posts.length; i++) { %>
+                               <%= Sub({id:posts[i].id, userId:posts[i].userId, title:posts[i].title, body:posts[i].body}) %>
+                             <% } %>`;
+
+  var Sub = function() {
+    Base.call(this);
+  };
+  Sub.prototype.template = `<article>
+                             <ul>
+                               <li>id: <%= id %></li>
+                               <li>userId: <%= userId %></li>
+                               <li>title: <%= title %></li>
+                               <li>body: <%= body %></li>
+                             </ul>
+                           </article>`;
+
+  // inherits
+  Object.setPrototypeOf(Main.prototype, Base.prototype);
+  Object.setPrototypeOf(Sub.prototype, Base.prototype);
+
+  // instances
+  var main = new Main();
+  var sub = new Sub();
+
+  $.subscribe("posts/loaded", function(e, data) {
+    main.render("#main", { posts: data, Sub: sub.component });
+  });
+})();
