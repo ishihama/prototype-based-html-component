@@ -13,6 +13,13 @@ module.exports = {
     port: 3000,
     disableHostCheck: true,
     contentBase: path.resolve(__dirname, "public"),
-    open: true
+    open: true,
+    proxy: {
+      "/api/*": {
+        target: "http://jsonplaceholder.typicode.com/",
+        pathRewrite: { "^/api": "" },
+        changeOrigin: true
+      }
+    }
   }
 };
