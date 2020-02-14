@@ -29,19 +29,22 @@
     };
   };
 
-  var L1Template = `<% for (var i = 0; i < posts.length; i++) { %>
-                        <%= L2({L3:L3, post:posts[i]}) %>
-                      <% } %>`;
-  var L2Template = `<article>
-                       <ul>
-                         <%= L3({id:post.id, userId:post.userId, title:post.title, body:post.body}) %>
-                       </ul>
-                     </article>`;
+  var L1Template =
+    "<% for (var i = 0; i < posts.length; i++) { %>\
+      <%= L2({L3:L3, post:posts[i]}) %>\
+     <% } %>";
+  var L2Template =
+    "<article>\
+       <ul>\
+         <%= L3({id:post.id, userId:post.userId, title:post.title, body:post.body}) %>\
+       </ul>\
+     </article>";
 
-  var L3Template = `<li>id: <%= id %></li>
-                    <li>userId: <%= userId %></li>
-                    <li>title: <%= title %></li>
-                    <li>body: <%= body %></li>`;
+  var L3Template =
+    "<li>id: <%= id %></li>\
+     <li>userId: <%= userId %></li>\
+     <li>title: <%= title %></li>\
+     <li>body: <%= body %></li>";
 
   // instances
   var layer1 = new Component(L1Template);
@@ -57,17 +60,18 @@
   });
 })();
 
-window.addEventListener("DOMContentLoaded", event => {
+window.addEventListener("DOMContentLoaded", function(event) {
   console.log("DOM fully loaded and parsed");
 
   // API Call
   $.ajax({
-    url: "https://jsonplaceholder.typicode.com/posts",
+    url: "/api/posts",
     type: "GET",
     data: { userId: "1" },
     datatype: "json"
   })
     .done(function(data) {
+      console.log(data);
       // initial rendering
       $.publish("posts/loaded", [data]);
     })
@@ -78,17 +82,18 @@ window.addEventListener("DOMContentLoaded", event => {
   setTimeout(function() {
     // API Call
     $.ajax({
-      url: "https://jsonplaceholder.typicode.com/posts",
+      url: "/api/posts",
       type: "GET",
       data: { userId: "2" },
       datatype: "json"
     })
       .done(function(data) {
+        console.log(data);
         // re-rendering
         $.publish("posts/loaded", [data]);
       })
       .fail(function(jqXHR, textStatus, errorThrown) {
-        console.error(jqXHR.status, textStatus);
+        console.error(jqXHR, textStatus);
       });
   }, 3000);
 });
