@@ -1,25 +1,3 @@
-// [Support for older versions of IE]
-//
-// Object.setPrototypeOf =
-//   Object.setPrototypeOf ||
-//   function(obj, proto) {
-//     if (!isIE9() && !isIE10()) {
-//       obj.__proto__ = proto;
-//     } else {
-//       /** IE9,IE10 fix - copy object methods from the protype to the new object **/
-//       for (var prop in proto) {
-//         obj[prop] = proto[prop];
-//       }
-//     }
-//     return obj;
-//   };
-// var isIE9 = function() {
-//   return navigator.appVersion.indexOf("MSIE 9") > 0;
-// };
-// var isIE10 = function() {
-//   return navigator.appVersion.indexOf("MSIE 10") > 0;
-// };
-
 (function() {
   var Component = function(template) {
     this.component = _.template(template);
